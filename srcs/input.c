@@ -61,7 +61,8 @@ t_philo	parse_input(char **argv, int argc)
 		philo.flag_meals = 1;
 	}
 	philo.attention = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-	if (philo.attention == NULL || pthread_mutex_init(philo.attention, NULL) != 0)
+	if (philo.attention == NULL
+		|| pthread_mutex_init(philo.attention, NULL) != 0)
 		philo.num_meals = 0;
 	return (philo);
 }

@@ -30,7 +30,7 @@ static t_philo	copy_philo(unsigned int index, t_philo philo)
 {
 	t_philo	new_philo;
 
-	new_philo.id = index;
+	new_philo.id = index + 1;
 	new_philo.time_die = philo.time_die;
 	new_philo.time_eat = philo.time_eat;
 	new_philo.time_sleep = philo.time_sleep;

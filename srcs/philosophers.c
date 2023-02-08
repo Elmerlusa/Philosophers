@@ -26,9 +26,9 @@ int	main(int argc, char *argv[])
 		return (0);
 	philo = parse_input(argv, argc);
 	num_threads = check_uint(argv[1]);
-	if (philo.time_die == 0 || philo.time_eat == 0 ||
-		philo.time_sleep == 0 || philo.num_meals == 0 ||
-		philo.attention == NULL ||  num_threads == 0)
+	if (philo.time_die == 0 || philo.time_eat == 0
+		|| philo.time_sleep == 0 || philo.num_meals == 0
+		|| philo.attention == NULL || num_threads == 0)
 	{
 		free(philo.attention);
 		return (0);

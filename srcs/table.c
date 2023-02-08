@@ -17,8 +17,11 @@ static void	clean_table_error(t_seat_philo *table, unsigned int index)
 	while (index + 1 > 0)
 	{
 		pthread_mutex_destroy(table[index].right_fork);
+		free(table[index].right_fork);
 		index--;
 	}
+	pthread_mutex_destroy(table->philo.attention);
+	free(table->philo.attention);
 	free(table);
 	return ;
 }
@@ -33,6 +36,7 @@ static t_philo	copy_philo(unsigned int index, t_philo philo)
 	new_philo.time_sleep = philo.time_sleep;
 	new_philo.num_meals = philo.num_meals;
 	new_philo.flag_meals = philo.flag_meals;
+	new_philo.attention = philo.attention;
 	return (new_philo);
 }
 
@@ -73,8 +77,11 @@ void	clean_table(t_seat_philo *table, unsigned int num_philo)
 	while (index < num_philo)
 	{
 		pthread_mutex_destroy(table[index].right_fork);
+		free(table[index].right_fork);
 		index++;
 	}
+	pthread_mutex_destroy(table->philo.attention);
+	free(table->philo.attention);
 	free(table);
 	return ;
 }

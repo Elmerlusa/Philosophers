@@ -17,8 +17,10 @@ void    print_state(struct timeval start, t_philo philo, char *action)
     struct timeval  time;
 
     gettimeofday(&time, NULL);
+    pthread_mutex_lock(philo.attention);
     printf("%ld %i %s\n", (time.tv_sec - start.tv_sec) * 1000 +
         (time.tv_usec - start.tv_usec) / 1000, philo.id, action);
+    pthread_mutex_unlock(philo.attention);
     return ;
 }
 

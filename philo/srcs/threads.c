@@ -75,9 +75,12 @@ void	start_threads(t_seat_philo *table, unsigned int num_threads)
 		return ;
 	while (index < num_threads)
 	{
-		pthread_create(threads + index, NULL, routine, (void *) &table[index]);
-		if (usleep(100) == -1)
+		if (pthread_create(threads + index, NULL, routine,
+				(void *) &table[index]) || usleep(100) == -1)
+		{
+			free(threads);
 			return ;
+		}
 		index++;
 	}
 	index = 0;

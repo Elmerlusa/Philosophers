@@ -12,32 +12,43 @@
 
 #include "philosophers.h"
 
-void	print_message(int philosopher, char *action)
+void    print_state(struct timeval start, t_philo philo, char *action)
 {
-	struct timeval	time;
+    struct timeval  time;
 
-	gettimeofday(&time, NULL);
-	printf("%ld %i %s\n", time.tv_usec / 1000, philosopher, action);
-	return ;
+    gettimeofday(&time, NULL);
+    printf("%ld %i %s\n", (time.tv_sec - start.tv_sec) * 1000 +
+        (time.tv_usec - start.tv_usec) / 1000, philo.id, action);
+    return ;
 }
 
-void	*routine(void *ptr)
+void    *routine(void *ptr)
 {
-	t_seat_philo	*seat;
+    t_seat_philo    *seat;
+    struct timeval  start;
 
-	seat = (t_seat_philo *)ptr;
-	printf(">>%i\n", seat->philo.id);
-	// while (1)
-	// {
-	// 	print_message(philo->philo_id, MSG_THINKING);
-	// 	print_message(philo->philo_id, MSG_FORK);
-	// 	print_message(philo->philo_id, MSG_EATING);
-	// 	if (usleep(philo->time_eat) == -1)
-	// 		return (NULL);
-	// 	print_message(1, MSG_SLEEPING);
-	// 	if (usleep(philo->time_sleep) == -1)
-	// 		return (NULL);
-	// }
-	// print_message(1, MSG_DIED);
-	return (NULL);
+    seat = (t_seat_philo *)ptr;
+    gettimeofday(&start, NULL);
+    while (seat->philo.num_meals)
+    {
+        print_state(start, seat->philo, MSG_THINKING);
+        pthread_mutex_lock(seat->right_fork);
+        print_state(start, seat->philo, MSG_FORK);
+        pthread_mutex_lock(seat->left_fork);
+        print_state(start, seat->philo, MSG_FORK);
+        print_state(start, seat->philo, MSG_EATING);
+        if (usleep(seat->philo.time_eat * 1000) == -1)
+            return (NULL);
+        pthread_mutex_unlock(seat->right_fork);
+        pthread_mutex_unlock(seat->left_fork);
+        print_state(start, seat->philo, MSG_SLEEPING);
+        if (usleep(seat->philo.time_sleep * 1000) == -1)
+            return (NULL);
+		if (seat->philo.flag_meals == 1)
+			seat->philo.num_meals -= 1;
+    }
+	if (seat->philo.num_meals != 0)
+    	print_state(start, seat->philo, MSG_DIED);
+    return (NULL);
 }
+

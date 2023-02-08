@@ -23,6 +23,8 @@ void	start_threads(t_seat_philo *table, unsigned int num_threads)
 	while (index < num_threads)
 	{
 		pthread_create(threads + index, NULL, routine, (void *) &table[index]);
+		if (usleep(100) == -1)
+			return ;
 		index++;
 	}
 	index = 0;

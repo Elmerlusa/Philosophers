@@ -32,6 +32,7 @@ static t_philo	copy_philo(unsigned int index, t_philo philo)
 	new_philo.time_eat = philo.time_eat;
 	new_philo.time_sleep = philo.time_sleep;
 	new_philo.num_meals = philo.num_meals;
+	new_philo.flag_meals = philo.flag_meals;
 	return (new_philo);
 }
 
@@ -48,7 +49,7 @@ t_seat_philo	*prepare_table(unsigned int num_philo, t_philo philo)
 	while (index < num_philo)
 	{
 		right_fork = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-		if (right_fork == NULL)
+		if (right_fork == NULL || pthread_mutex_init(right_fork, NULL) != 0)
 		{
 			clean_table_error(table, index - 1);
 			return (NULL);

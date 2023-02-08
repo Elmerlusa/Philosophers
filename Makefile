@@ -35,6 +35,12 @@ all:		${NAME}
 test:		${NAME}
 		./${NAME} 2 10000 2000 2000
 
+test1:		${NAME}
+		./${NAME} 1 10000 2000 2000
+
+testmeal:	${NAME}
+		./${NAME} 2 10000 2000 2000 2
+
 ${NAME}:	${OBJS}
 		@${CC} ${THREADFLAG} $^ -o ${NAME}
 

@@ -24,9 +24,12 @@ int	main(int argc, char *argv[])
 
 	if (argc != 5 && argc != 6)
 		return (0);
+	printf("HOLA");
 	philo = parse_input(argv, argc);
 	num_threads = check_uint(argv[1]);
-	if (check_input(philo, argc) == -1 || num_threads == 0)
+	if (philo.time_die == 0 || philo.time_eat == 0 ||
+		philo.time_sleep == 0 || philo.num_meals == 0 ||
+		num_threads == 0)
 		return (0);
 	table = prepare_table(num_threads, philo);
 	start_threads(table, num_threads);

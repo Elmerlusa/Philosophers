@@ -33,6 +33,7 @@ typedef struct s_philo {
 	unsigned int	time_eat;
 	unsigned int	time_sleep;
 	unsigned int	num_meals;
+	unsigned int	flag_meals;
 }	t_philo;
 
 typedef struct s_seat_philo {

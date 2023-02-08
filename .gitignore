@@ -1,0 +1,6 @@
+*.o
+*.exe
+.DS_Store
+*.txt
+philo.exe
+philo

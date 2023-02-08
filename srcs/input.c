@@ -45,26 +45,20 @@ unsigned int	check_uint(char *str_num)
 
 t_philo	parse_input(char **argv, int argc)
 {
-	t_philo	philo;
-	int		index;
+	t_philo			philo;
+	int				index;
 
 	index = 2;
 	philo.id = 0;
 	philo.time_die = check_uint(argv[index++]);
 	philo.time_eat = check_uint(argv[index++]);
 	philo.time_sleep = check_uint(argv[index++]);
-	philo.num_meals = 0;
+	philo.num_meals = 1;
+	philo.flag_meals = 0;
 	if (argc == 6)
+	{
 		philo.num_meals = check_uint(argv[index]);
+		philo.flag_meals = 1;
+	}
 	return (philo);
-}
-
-int	check_input(t_philo philo, int argc)
-{
-	if (philo.time_die == 0 || philo.time_eat == 0
-		|| philo.time_sleep == 0)
-		return (-1);
-	if (argc == 6 && philo.num_meals == 0)
-		return (-1);
-	return (0);
 }

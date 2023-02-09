@@ -14,7 +14,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCSDIR = ./srcs/
-CFILES = philosophers.c input.c libft.c threads.c table.c
+CFILES = philosophers.c input.c libft.c threads.c table.c routine.c
 
 SRCS = ${addprefix ${SRCSDIR}, ${CFILES}}
 

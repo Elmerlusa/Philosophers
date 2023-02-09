@@ -12,56 +12,46 @@
 
 #include "philosophers.h"
 
-void	print_state(struct timeval start, t_philo philo, char *action)
+void	print_state(t_philo philo, char *action);
+void	*routine(void *ptr);
+long	get_exec_time(void);
+
+int	all_finished(t_seat_philo *table, unsigned int num_philo)
 {
-	struct timeval	time;
+	unsigned int	index;
 
-	gettimeofday(&time, NULL);
-	pthread_mutex_lock(philo.attention);
-	printf("%ld %i %s\n", (time.tv_sec - start.tv_sec) * 1000
-		+ (time.tv_usec - start.tv_usec) / 1000, philo.id, action);
-	pthread_mutex_unlock(philo.attention);
-	return ;
-}
-
-void	*routine(void *ptr)
-{
-	t_seat_philo	*seat;
-	struct timeval	start;
-
-	seat = (t_seat_philo *)ptr;
-	gettimeofday(&start, NULL);
-	while (seat->philo.num_meals)
+	index = 0;
+	while (index < num_philo)
 	{
-		pthread_mutex_lock(seat->right_fork);
-		print_state(start, seat->philo, MSG_FORK);
-		pthread_mutex_lock(seat->left_fork);
-		print_state(start, seat->philo, MSG_FORK);
-		print_state(start, seat->philo, MSG_EATING);
-		if (usleep(seat->philo.time_eat * 1000) == -1)
-			return (NULL);
-		pthread_mutex_unlock(seat->right_fork);
-		pthread_mutex_unlock(seat->left_fork);
-		print_state(start, seat->philo, MSG_SLEEPING);
-		if (usleep(seat->philo.time_sleep * 1000) == -1)
-			return (NULL);
-		print_state(start, seat->philo, MSG_THINKING);
-		if (seat->philo.flag_meals == 1)
-			seat->philo.num_meals -= 1;
+		if (table[index].philo.num_meals != 0)
+			return (0);
+		index++;
 	}
-	if (seat->philo.num_meals != 0)
-		print_state(start, seat->philo, MSG_DIED);
-	return (NULL);
+	return (1);
 }
 
-pthread_t	*create_threads(unsigned int num_threads)
+void	check_deads(t_seat_philo *table, unsigned int num_philo)
 {
-	pthread_t	*threads;
+	long			time;
+	unsigned int	index;
 
-	threads = (pthread_t *)ft_calloc(num_threads, sizeof(pthread_t));
-	if (threads == NULL)
-		return (NULL);
-	return (threads);
+	index = 0;
+	while (all_finished(table, num_philo) == 0)
+	{
+		time = get_exec_time();
+		if (time - table[index].philo.last_meal_time
+			> table[index].philo.time_die
+			&& table[index].philo.num_meals != 0)
+		{
+			pthread_mutex_lock(table[index].philo.attention);
+			print_state(table[index].philo, MSG_DIED);
+			pthread_mutex_unlock(table[index].philo.attention);
+			break ;
+		}
+		index++;
+		if (index == num_philo)
+			index = 0;
+	}
 }
 
 void	start_threads(t_seat_philo *table, unsigned int num_threads)
@@ -69,10 +59,10 @@ void	start_threads(t_seat_philo *table, unsigned int num_threads)
 	pthread_t		*threads;
 	unsigned int	index;
 
-	index = 0;
-	threads = create_threads(num_threads);
+	threads = (pthread_t *)ft_calloc(num_threads, sizeof(pthread_t));
 	if (threads == NULL)
 		return ;
+	index = 0;
 	while (index < num_threads)
 	{
 		if (pthread_create(threads + index, NULL, routine,
@@ -81,14 +71,10 @@ void	start_threads(t_seat_philo *table, unsigned int num_threads)
 			free(threads);
 			return ;
 		}
+		pthread_detach(threads[index]);
 		index++;
 	}
-	index = 0;
-	while (index < num_threads)
-	{
-		pthread_join(threads[index], NULL);
-		index++;
-	}
+	check_deads(table, num_threads);
 	free(threads);
 	return ;
 }

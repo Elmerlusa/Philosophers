@@ -43,9 +43,7 @@ void	check_deads(t_seat_philo *table, unsigned int num_philo)
 			> table[index].philo.time_die
 			&& table[index].philo.num_meals != 0)
 		{
-			pthread_mutex_lock(table[index].philo.attention);
 			print_state(table[index].philo, MSG_DIED);
-			pthread_mutex_unlock(table[index].philo.attention);
 			break ;
 		}
 		index++;

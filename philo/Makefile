@@ -37,10 +37,10 @@ error:		${NAME}
 		./${NAME} 1 1 1
 
 die:		${NAME}
-		./${NAME} 4 310 200 100
+		./${NAME} 4 200 205 200
 
 live:		${NAME}
-		./${NAME} 5 800 200 200 7
+		./${NAME} 5 800 200 200
 
 test2:		${NAME}
 		./${NAME} 2 10000 2000 2000

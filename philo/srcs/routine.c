@@ -53,19 +53,21 @@ void	*routine(void *ptr)
 	start_time = get_exec_time();
 	seat->philo.sit_time = start_time;
 	seat->philo.last_meal_time = start_time;
-	while (seat->philo.num_meals)
+	while (1)
 	{
 		philo_eat(seat);
 		if (usleep(seat->philo.time_eat * 1000) == -1)
 			return (NULL);
 		pthread_mutex_unlock(seat->left_fork);
 		pthread_mutex_unlock(seat->right_fork);
+		if (seat->philo.flag_meals == 1)
+			seat->philo.num_meals -= 1;
+		if (seat->philo.num_meals == 0)
+			break ;
 		print_state(seat->philo, MSG_SLEEPING);
 		if (usleep(seat->philo.time_sleep * 1000) == -1)
 			return (NULL);
 		print_state(seat->philo, MSG_THINKING);
-		if (seat->philo.flag_meals == 1)
-			seat->philo.num_meals -= 1;
 	}
 	return (NULL);
 }

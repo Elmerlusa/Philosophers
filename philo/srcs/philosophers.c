@@ -34,6 +34,8 @@ int	main(int argc, char *argv[])
 		return (0);
 	}
 	table = prepare_table(num_threads, philo);
+	if (table == NULL)
+		return (0);
 	start_threads(table, num_threads);
 	clean_table(table, num_threads);
 	return (0);

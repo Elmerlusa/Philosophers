@@ -34,7 +34,6 @@ typedef struct s_philo {
 	unsigned int	time_sleep;
 	unsigned int	num_meals;
 	unsigned int	flag_meals;
-	unsigned int	dead;
 	long			sit_time;
 	long			last_meal_time;
 	pthread_mutex_t	*attention;

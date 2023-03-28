@@ -26,6 +26,8 @@ void	print_state(t_philo philo, char *action)
 {
 	long	time;
 
+	if (philo.num_meals == 0)
+		return ;
 	time = get_exec_time();
 	pthread_mutex_lock(philo.attention);
 	printf("%ld %i %s\n", time - philo.sit_time, philo.id, action);
@@ -47,12 +49,10 @@ void	philo_eat(t_seat_philo *seat)
 void	*routine(void *ptr)
 {
 	t_seat_philo	*seat;
-	long			start_time;
 
 	seat = (t_seat_philo *)ptr;
-	start_time = get_exec_time();
-	seat->philo.sit_time = start_time;
-	seat->philo.last_meal_time = start_time;
+	seat->philo.sit_time = get_exec_time();
+	seat->philo.last_meal_time = seat->philo.sit_time;
 	while (1)
 	{
 		philo_eat(seat);

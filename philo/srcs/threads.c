@@ -16,6 +16,19 @@ void	print_state(t_philo philo, char *action);
 void	*routine(void *ptr);
 long	get_exec_time(void);
 
+void	set_num_meals(int n, t_seat_philo *table, unsigned int num_philo)
+{
+	unsigned int	index;
+
+	index = 0;
+	while (index < num_philo)
+	{
+		table[index].philo.num_meals = n;
+		index++;
+	}
+	return ;
+}
+
 int	all_finished(t_seat_philo *table, unsigned int num_philo)
 {
 	unsigned int	index;
@@ -38,13 +51,16 @@ void	check_deads(t_seat_philo *table, unsigned int num_philo)
 	index = 0;
 	while (all_finished(table, num_philo) == 0)
 	{
-		time = get_exec_time();
-		if (time - table[index].philo.last_meal_time
-			> table[index].philo.time_die
-			&& table[index].philo.num_meals != 0)
+		if (table[index].philo.num_meals != 0)
 		{
-			print_state(table[index].philo, MSG_DIED);
-			break ;
+			time = get_exec_time();
+			if (time - table[index].philo.last_meal_time
+				> table[index].philo.time_die)
+			{
+				print_state(table[index].philo, MSG_DIED);
+				set_num_meals(0, table, num_philo);
+				break ;
+			}
 		}
 		index++;
 		if (index == num_philo)
@@ -64,7 +80,7 @@ void	start_threads(t_seat_philo *table, unsigned int num_threads)
 	while (index < num_threads)
 	{
 		if (pthread_create(threads + index, NULL, routine,
-				(void *) &table[index]) || usleep(100) == -1)
+				(void *) &table[index]) || usleep(50) == -1)
 		{
 			free(threads);
 			return ;

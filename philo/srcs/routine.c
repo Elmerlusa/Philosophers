@@ -15,22 +15,17 @@
 long	get_exec_time(void)
 {
 	struct timeval	timestamp;
-	long			exec_time;
 
 	gettimeofday(&timestamp, NULL);
-	exec_time = timestamp.tv_sec * 1000 + timestamp.tv_usec / 1000;
-	return (exec_time);
+	return (timestamp.tv_sec * 1000 + timestamp.tv_usec / 1000);
 }
 
 void	print_state(t_philo philo, char *action)
 {
-	long	time;
-
 	if (philo.num_meals == 0)
 		return ;
-	time = get_exec_time();
 	pthread_mutex_lock(philo.attention);
-	printf("%ld %i %s\n", time - philo.sit_time, philo.id, action);
+	printf("%ld %i %s\n", get_exec_time() - philo.sit_time, philo.id, action);
 	pthread_mutex_unlock(philo.attention);
 	return ;
 }

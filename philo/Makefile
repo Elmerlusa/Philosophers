@@ -35,24 +35,20 @@ all:		${NAME}
 error:		${NAME}
 		./${NAME} 1 1 1 1 1 1 1
 		./${NAME} 1 1 1
+		./${NAME} 1 -1 1 1 1
+		./${NAME} 1 ++1 1 1 1
+		./${NAME} a 1 1 1 1
 
-die:		${NAME}
-		./${NAME} 4 200 205 200
-
-live:		${NAME}
-		./${NAME} 5 800 200 200
-
-test2:		${NAME}
-		./${NAME} 2 10000 2000 2000
-
-test1:		${NAME}
-		./${NAME} 1 10000 2000 2000
-
-testmeal:	${NAME}
-		./${NAME} 2 10000 2000 2000 2
+# ./philo 1 800 200 200 mueren
+# ./philo 5 800 200 200 viven
+# ./philo 5 800 200 200 7 viven
+# ./philo 4 410 200 200 viven
+# ./philo 4 310 200 100 mueren
+# ./philo 3 310 103 103 viven
+# ./philo 3 310 104 104 mueren
 
 ${NAME}:	${OBJS}
-		@${CC} ${THREADFLAG} $^ -o ${NAME}
+		@${CC} ${CFLAGS} ${THREADFLAG} $^ -o ${NAME}
 
 %.o:		%.c
 		@${CC} -c ${CFLAGS} ${THREADFLAG} $^ -o $@ ${INC}

@@ -80,9 +80,10 @@ void	start_threads(t_seat_philo *table, unsigned int num_threads)
 	while (index < num_threads)
 	{
 		if (pthread_create(threads + index, NULL, routine,
-				(void *) &table[index]) || usleep(50) == -1)
+				(void *) &table[index]) || usleep(25) == -1)
 		{
 			free(threads);
+			set_num_meals(0, table, num_threads);
 			return ;
 		}
 		pthread_detach(threads[index]);

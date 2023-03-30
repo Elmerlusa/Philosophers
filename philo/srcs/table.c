@@ -12,13 +12,16 @@
 
 #include "philosophers.h"
 
-static void	clean_table_error(t_seat_philo *table, unsigned int index)
+void	clean_table(t_seat_philo *table, unsigned int num_philo)
 {
-	while (index + 1 > 0)
+	unsigned int	index;
+
+	index = 0;
+	while (index < num_philo)
 	{
 		pthread_mutex_destroy(table[index].right_fork);
 		free(table[index].right_fork);
-		index--;
+		index++;
 	}
 	pthread_mutex_destroy(table->philo.attention);
 	free(table->philo.attention);
@@ -37,7 +40,21 @@ static t_philo	copy_philo(unsigned int index, t_philo philo)
 	new_philo.num_meals = philo.num_meals;
 	new_philo.flag_meals = philo.flag_meals;
 	new_philo.attention = philo.attention;
+	new_philo.last_meal_mtx
+		= (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+	new_philo.num_meals_mtx
+		= (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
 	return (new_philo);
+}
+
+void	assing_fork(t_seat_philo *table, unsigned int index,
+	pthread_mutex_t **right_fork, unsigned int num_philo)
+{
+	table[index].right_fork = *right_fork;
+	if (index != num_philo - 1)
+		table[index + 1].left_fork = *right_fork;
+	else
+		table[0].left_fork = *right_fork;
 }
 
 t_seat_philo	*prepare_table(unsigned int num_philo, t_philo philo)
@@ -52,36 +69,17 @@ t_seat_philo	*prepare_table(unsigned int num_philo, t_philo philo)
 	index = 0;
 	while (index < num_philo)
 	{
+		table[index].philo = copy_philo(index, philo);
 		right_fork = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-		if (right_fork == NULL || pthread_mutex_init(right_fork, NULL) != 0)
+		if (right_fork == NULL || pthread_mutex_init(right_fork, NULL) != 0
+			|| table[index].philo.num_meals_mtx == NULL
+			|| table[index].philo.last_meal_mtx == NULL)
 		{
-			clean_table_error(table, index - 1);
+			clean_table(table, index + 1);
 			return (NULL);
 		}
-		table[index].philo = copy_philo(index, philo);
-		table[index].right_fork = right_fork;
-		if (index != num_philo - 1)
-			table[index + 1].left_fork = right_fork;
-		else
-			table[0].left_fork = right_fork;
+		assing_fork(table, index, &right_fork, num_philo);
 		index++;
 	}
 	return (table);
-}
-
-void	clean_table(t_seat_philo *table, unsigned int num_philo)
-{
-	unsigned int	index;
-
-	index = 0;
-	while (index < num_philo)
-	{
-		pthread_mutex_destroy(table[index].right_fork);
-		free(table[index].right_fork);
-		index++;
-	}
-	pthread_mutex_destroy(table->philo.attention);
-	free(table->philo.attention);
-	free(table);
-	return ;
 }

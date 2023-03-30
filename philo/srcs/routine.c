@@ -37,7 +37,9 @@ void	philo_eat(t_seat_philo *seat)
 	pthread_mutex_lock(seat->right_fork);
 	print_state(seat->philo, MSG_FORK);
 	print_state(seat->philo, MSG_EATING);
+	pthread_mutex_unlock(seat->philo.last_meal_mtx);
 	seat->philo.last_meal_time = get_exec_time();
+	pthread_mutex_unlock(seat->philo.last_meal_mtx);
 	return ;
 }
 
@@ -55,10 +57,12 @@ void	*routine(void *ptr)
 			return (NULL);
 		pthread_mutex_unlock(seat->left_fork);
 		pthread_mutex_unlock(seat->right_fork);
+		pthread_mutex_lock(seat->philo.num_meals_mtx);
 		if (seat->philo.flag_meals == 1)
 			seat->philo.num_meals -= 1;
-		if (seat->philo.num_meals == 0)
+		if (seat->philo.num_meals <= 0)
 			break ;
+		pthread_mutex_unlock(seat->philo.num_meals_mtx);
 		print_state(seat->philo, MSG_SLEEPING);
 		if (usleep(seat->philo.time_sleep * 1000) == -1)
 			return (NULL);

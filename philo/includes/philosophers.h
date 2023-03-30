@@ -37,6 +37,8 @@ typedef struct s_philo {
 	long			sit_time;
 	long			last_meal_time;
 	pthread_mutex_t	*attention;
+	pthread_mutex_t	*num_meals_mtx;
+	pthread_mutex_t	*last_meal_mtx;
 }	t_philo;
 
 typedef struct s_seat_philo {

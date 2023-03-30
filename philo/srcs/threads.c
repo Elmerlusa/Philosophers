@@ -23,7 +23,9 @@ void	set_num_meals(int n, t_seat_philo *table, unsigned int num_philo)
 	index = 0;
 	while (index < num_philo)
 	{
+		pthread_mutex_lock(table[index].philo.num_meals_mtx);
 		table[index].philo.num_meals = n;
+		pthread_mutex_unlock(table[index].philo.num_meals_mtx);
 		index++;
 	}
 	return ;
@@ -32,11 +34,15 @@ void	set_num_meals(int n, t_seat_philo *table, unsigned int num_philo)
 int	all_finished(t_seat_philo *table, unsigned int num_philo)
 {
 	unsigned int	index;
+	unsigned int	num_meals;
 
 	index = 0;
 	while (index < num_philo)
 	{
-		if (table[index].philo.num_meals != 0)
+		pthread_mutex_lock(table[index].philo.num_meals_mtx);
+		num_meals = table[index].philo.num_meals;
+		pthread_mutex_unlock(table[index].philo.num_meals_mtx);
+		if (num_meals != 0)
 			return (0);
 		index++;
 	}
@@ -47,15 +53,18 @@ void	check_deads(t_seat_philo *table, unsigned int num_philo)
 {
 	long			time;
 	unsigned int	index;
+	long			last_meal_time;
 
 	index = 0;
 	while (all_finished(table, num_philo) == 0)
 	{
 		if (table[index].philo.num_meals != 0)
 		{
+			pthread_mutex_lock(table[index].philo.last_meal_mtx);
+			last_meal_time = table[index].philo.last_meal_time;
+			pthread_mutex_unlock(table[index].philo.last_meal_mtx);
 			time = get_exec_time();
-			if (time - table[index].philo.last_meal_time
-				> table[index].philo.time_die)
+			if (time - last_meal_time > table[index].philo.time_die)
 			{
 				print_state(table[index].philo, MSG_DIED);
 				set_num_meals(0, table, num_philo);

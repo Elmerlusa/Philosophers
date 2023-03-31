@@ -78,6 +78,21 @@ void	check_deads(t_seat_philo *table, unsigned int num_philo)
 	}
 }
 
+void	wait_threads(pthread_t *threads, unsigned int num_threads)
+{
+	unsigned int	index;
+
+	if (num_threads == 1)
+	{
+		pthread_detach(threads[0]);
+		return ;
+	}
+	index = 0;
+	while (index < num_threads)
+		pthread_join(threads[index++], NULL);
+	return ;
+}
+
 void	start_threads(t_seat_philo *table, unsigned int num_threads)
 {
 	pthread_t		*threads;
@@ -96,10 +111,10 @@ void	start_threads(t_seat_philo *table, unsigned int num_threads)
 			set_num_meals(0, table, num_threads);
 			return ;
 		}
-		pthread_detach(threads[index]);
 		index++;
 	}
 	check_deads(table, num_threads);
+	wait_threads(threads, num_threads);
 	free(threads);
 	return ;
 }

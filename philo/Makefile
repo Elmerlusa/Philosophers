@@ -12,7 +12,6 @@
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-# CFLAGS += -fsanitize=address
 # CFLAGS += -fsanitize=thread
 
 SRCSDIR = ./
@@ -44,7 +43,7 @@ error:		${NAME}
 
 # ./philo 1 800 200 200 mueren
 # ./philo 5 800 200 200 viven
-# ./philo 5 800 200 200 7 viven
+# ./philo 5 800 200 200 7 && ./philo 5 800 200 200 7 | grep "1 is eating" | wc -l viven
 # ./philo 4 410 200 200 viven
 # ./philo 4 310 200 100 mueren
 # ./philo 3 310 103 103 viven

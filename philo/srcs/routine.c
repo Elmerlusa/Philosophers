@@ -43,6 +43,27 @@ void	philo_eat(t_seat_philo *seat)
 	return ;
 }
 
+void	sleep_checking(t_seat_philo *seat, unsigned int time_sleep)
+{
+	long			start_time;
+	long			end_time;
+	unsigned int	num_meals;
+
+	start_time = get_exec_time();
+	end_time = get_exec_time();
+	while (end_time - start_time < time_sleep)
+	{
+		pthread_mutex_lock(seat->philo.num_meals_mtx);
+		num_meals = seat->philo.num_meals;
+		pthread_mutex_unlock(seat->philo.num_meals_mtx);
+		if (num_meals == 0)
+			return ;
+		usleep(50);
+		end_time = get_exec_time();
+	}
+	return ;
+}
+
 void	*routine(void *ptr)
 {
 	t_seat_philo	*seat;
@@ -53,8 +74,7 @@ void	*routine(void *ptr)
 	while (1)
 	{
 		philo_eat(seat);
-		if (usleep(seat->philo.time_eat * 1000) == -1)
-			return (NULL);
+		sleep_checking(seat, seat->philo.time_eat);
 		pthread_mutex_unlock(seat->left_fork);
 		pthread_mutex_unlock(seat->right_fork);
 		pthread_mutex_lock(seat->philo.num_meals_mtx);
@@ -64,8 +84,7 @@ void	*routine(void *ptr)
 			break ;
 		pthread_mutex_unlock(seat->philo.num_meals_mtx);
 		print_state(seat->philo, MSG_SLEEPING);
-		if (usleep(seat->philo.time_sleep * 1000) == -1)
-			return (NULL);
+		sleep_checking(seat, seat->philo.time_sleep);
 		print_state(seat->philo, MSG_THINKING);
 	}
 	return (NULL);

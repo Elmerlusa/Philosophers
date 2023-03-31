@@ -12,15 +12,17 @@
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
+# CFLAGS += -fsanitize=address
+# CFLAGS += -fsanitize=thread
 
-SRCSDIR = ./srcs/
+SRCSDIR = ./
 CFILES = philosophers.c input.c libft.c threads.c table.c routine.c
 
 SRCS = ${addprefix ${SRCSDIR}, ${CFILES}}
 
 OBJS = ${SRCS:.c=.o}
 
-INC = -I ./includes/
+INC = -I .
 
 NAME = philo
 
@@ -38,6 +40,7 @@ error:		${NAME}
 		./${NAME} 1 -1 1 1 1
 		./${NAME} 1 ++1 1 1 1
 		./${NAME} a 1 1 1 1
+		./${NAME} 1 1 1 1 136213424523
 
 # ./philo 1 800 200 200 mueren
 # ./philo 5 800 200 200 viven

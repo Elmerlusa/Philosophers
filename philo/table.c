@@ -21,11 +21,36 @@ void	clean_table(t_seat_philo *table, unsigned int num_philo)
 	{
 		pthread_mutex_destroy(table[index].right_fork);
 		free(table[index].right_fork);
+		pthread_mutex_destroy(table[index].philo.last_meal_mtx);
+		free(table[index].philo.last_meal_mtx);
+		pthread_mutex_destroy(table[index].philo.num_meals_mtx);
+		free(table[index].philo.num_meals_mtx);
 		index++;
 	}
 	pthread_mutex_destroy(table->philo.attention);
 	free(table->philo.attention);
 	free(table);
+	return ;
+}
+
+void	create_mutexes(t_philo *new_philo)
+{
+	new_philo->last_meal_mtx
+		= (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+	if (new_philo->last_meal_mtx != NULL
+		&& pthread_mutex_init(new_philo->last_meal_mtx, NULL))
+	{
+		free(new_philo->last_meal_mtx);
+		new_philo->last_meal_mtx = NULL;
+	}
+	new_philo->num_meals_mtx
+		= (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+	if (new_philo->num_meals_mtx != NULL
+		&& pthread_mutex_init(new_philo->num_meals_mtx, NULL))
+	{
+		free(new_philo->num_meals_mtx);
+		new_philo->num_meals_mtx = NULL;
+	}
 	return ;
 }
 
@@ -40,10 +65,7 @@ static t_philo	copy_philo(unsigned int index, t_philo philo)
 	new_philo.num_meals = philo.num_meals;
 	new_philo.flag_meals = philo.flag_meals;
 	new_philo.attention = philo.attention;
-	new_philo.last_meal_mtx
-		= (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-	new_philo.num_meals_mtx
-		= (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+	create_mutexes(&new_philo);
 	return (new_philo);
 }
 
@@ -55,6 +77,7 @@ void	assing_fork(t_seat_philo *table, unsigned int index,
 		table[index + 1].left_fork = *right_fork;
 	else
 		table[0].left_fork = *right_fork;
+	return ;
 }
 
 t_seat_philo	*prepare_table(unsigned int num_philo, t_philo philo)

@@ -12,7 +12,7 @@
 
 #include "philosophers.h"
 
-void	print_state(t_philo philo, char *action);
+void	print_state(t_philo *philo, char *action, int force_print);
 void	*routine(void *ptr);
 long	get_exec_time(void);
 
@@ -68,8 +68,8 @@ void	check_deads(t_seat_philo *table, unsigned int num_philo)
 			pthread_mutex_unlock(table[index].philo.last_meal_mtx);
 			if (get_exec_time() - last_meal_time > table[index].philo.time_die)
 			{
-				print_state(table[index].philo, MSG_DIED);
 				set_num_meals(0, table, num_philo);
+				print_state(&(table[index].philo), MSG_DIED, 1);
 				break ;
 			}
 		}

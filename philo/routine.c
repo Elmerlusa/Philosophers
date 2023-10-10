@@ -20,23 +20,31 @@ long	get_exec_time(void)
 	return (timestamp.tv_sec * 1000 + timestamp.tv_usec / 1000);
 }
 
-void	print_state(t_philo philo, char *action)
+void	print_state(t_philo *philo, char *action, int force_print)
 {
-	if (philo.num_meals == 0)
-		return ;
-	pthread_mutex_lock(philo.attention);
-	printf("%ld %i %s\n", get_exec_time() - philo.sit_time, philo.id, action);
-	pthread_mutex_unlock(philo.attention);
+	if (force_print == 1)
+		printf("%ld %i %s\n", get_exec_time() - philo->sit_time, \
+			philo->id, action);
+	else
+	{
+		pthread_mutex_lock(philo->attention);
+		pthread_mutex_lock(philo->num_meals_mtx);
+		if (philo->num_meals != 0)
+			printf("%ld %i %s\n", get_exec_time() - philo->sit_time, \
+				philo->id, action);
+		pthread_mutex_unlock(philo->num_meals_mtx);
+		pthread_mutex_unlock(philo->attention);
+	}
 	return ;
 }
 
 void	philo_eat(t_seat_philo *seat)
 {
 	pthread_mutex_lock(seat->left_fork);
-	print_state(seat->philo, MSG_FORK);
+	print_state(&seat->philo, MSG_FORK, 0);
 	pthread_mutex_lock(seat->right_fork);
-	print_state(seat->philo, MSG_FORK);
-	print_state(seat->philo, MSG_EATING);
+	print_state(&seat->philo, MSG_FORK, 0);
+	print_state(&seat->philo, MSG_EATING, 0);
 	pthread_mutex_lock(seat->philo.last_meal_mtx);
 	seat->philo.last_meal_time = get_exec_time();
 	pthread_mutex_unlock(seat->philo.last_meal_mtx);
@@ -85,9 +93,9 @@ void	*routine(void *ptr)
 		if (seat->philo.num_meals <= 0)
 			break ;
 		pthread_mutex_unlock(seat->philo.num_meals_mtx);
-		print_state(seat->philo, MSG_SLEEPING);
+		print_state(&seat->philo, MSG_SLEEPING, 0);
 		sleep_checking(seat, seat->philo.time_sleep);
-		print_state(seat->philo, MSG_THINKING);
+		print_state(&seat->philo, MSG_THINKING, 0);
 	}
 	pthread_mutex_unlock(seat->philo.num_meals_mtx);
 	return (NULL);

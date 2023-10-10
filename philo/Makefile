@@ -47,7 +47,6 @@ error:		${NAME}
 # ./philo 4 310 200 100 mueren
 # ./philo 3 310 103 103 viven
 # ./philo 3 310 104 104 mueren
-# ./philo 100 180 60 60
 
 ${NAME}:	${OBJS}
 		@${CC} ${CFLAGS} ${THREADFLAG} $^ -o ${NAME}

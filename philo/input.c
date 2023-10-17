@@ -33,6 +33,8 @@ unsigned int	check_uint(char *str_num)
 
 	if (*str_num == '-')
 		return (0);
+	else if (*str_num == '+')
+		str_num++;
 	number = ft_atoui(str_num);
 	num = ft_uitoa(number);
 	if (num == NULL)

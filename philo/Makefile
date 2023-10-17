@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror
 
 SRCSDIR = ./
 CFILES = philosophers.c input.c libft.c threads.c table.c routine.c
@@ -39,14 +39,6 @@ error:		${NAME}
 		./${NAME} 1 ++1 1 1 1
 		./${NAME} a 1 1 1 1
 		./${NAME} 1 1 1 1 136213424523
-
-# ./philo 1 800 200 200 mueren
-# ./philo 5 800 200 200 viven
-# ./philo 5 800 200 200 7 && ./philo 5 800 200 200 7 | grep "1 is eating" | wc -l viven
-# ./philo 4 410 200 200 viven
-# ./philo 4 310 200 100 mueren
-# ./philo 3 310 103 103 viven
-# ./philo 3 310 104 104 mueren
 
 ${NAME}:	${OBJS}
 		@${CC} ${CFLAGS} ${THREADFLAG} $^ -o ${NAME}
